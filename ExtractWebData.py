@@ -8,6 +8,9 @@ from langchain_community.document_loaders import RecursiveUrlLoader
 from langchain_community.document_loaders import WebBaseLoader
 import os
 from langchain_groq import ChatGroq
+import streamlit as st
+
+st.title('Ask Sonar GPT')
 
 # Step 1: Load the document from a web url
 loader = WebBaseLoader("https://docs.sonarsource.com/sonarqube/latest/")
@@ -26,16 +29,9 @@ llm = ChatGroq(temperature=0, model_name="llama3-8b-8192")
 chain = ConversationalRetrievalChain.from_llm(llm,
                                               vectorstore.as_retriever(),
                                               return_source_documents=True)
-query = None
-chat_history = []
-while True:
-    if not query:
-        query = input("Prompt: ")
-    if query in ['quit', 'q', 'exit']:
-        sys.exit()
-    # no chat history passed
-    result = chain({"question": query, "chat_history": []})
-    print(result['answer'])
 
-    chat_history.append((query, result['answer']))
-    query = None
+with st.form('my_form'):
+    text = st.text_area('Enter text:', 'What is SonarQube?')
+    submitted = st.form_submit_button('Submit')
+    if submitted:
+        st.info(chain({"question": text, "chat_history": []})['answer'])

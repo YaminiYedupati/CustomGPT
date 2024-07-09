@@ -3,10 +3,10 @@ This a custom Q&A based answering model that is trained on SonarQube documentati
 The purpose of this LLM is to provide AI like support for users trying to find answers to their questions related to SonarQube.
 
 Tech stack used:
-Python
-LangChain
-HuggingFace
-StreaLit (LLM integrated with StreamLit's API to serve as UI)
+- Python
+- LangChain
+- HuggingFace
+- StreamLit (LLM integrated with StreamLit's API to serve as UI)
 
 To use the model:
 1. Clone the repository.

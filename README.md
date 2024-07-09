@@ -14,4 +14,5 @@ To use the model:
 3. Ask a question related to SonarQube in the dialog box that pops up in your browser!
 
 Example:
+
 ![image](https://github.com/YaminiYedupati/CustomGPT/assets/147988230/8884bde4-e054-477c-b96c-45c160e7662a)

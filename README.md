@@ -16,3 +16,10 @@ To use the model:
 Example:
 
 ![image](https://github.com/YaminiYedupati/CustomGPT/assets/147988230/8884bde4-e054-477c-b96c-45c160e7662a)
+
+Architecture of the model:
+
+![image](https://github.com/YaminiYedupati/CustomGPT/assets/147988230/424fc54b-dafa-4090-9c0f-0a709ea5e159)
+
+Note: FAISS (Facebook AI Similarity Search) is Meta's vector store.
+

@@ -19,7 +19,8 @@ Example:
 
 Architecture of the model:
 
-![image](https://github.com/YaminiYedupati/CustomGPT/assets/147988230/424fc54b-dafa-4090-9c0f-0a709ea5e159)
+![image](https://github.com/YaminiYedupati/CustomGPT/assets/147988230/cacf69eb-4041-4ee9-8dd1-406e7f3dadca)
+
 
 Note: FAISS (Facebook AI Similarity Search) is Meta's vector store.
 

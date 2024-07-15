@@ -1,4 +1,5 @@
 # CustomGPT
+[Work In Progress]
 This a custom Q&A based answering model that is trained on SonarQube documentation.
 The purpose of this LLM is to provide AI like support for users trying to find answers to their questions related to SonarQube.
 

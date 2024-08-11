@@ -64,16 +64,30 @@ def retrieve_contents_from_subpages(main_url):
         for split in doc_splits:
             all_doc_splits.append(split)
     return all_doc_splits
+
+def get_retriever():
+    embedding_model_name = "sentence-transformers/all-mpnet-base-v2" # sentence-transformer is the most commonly used embedding
+    emd_model_kwargs = {"device": "cpu"}
+    hf_embedding = HuggingFaceEmbeddings(model_name=embedding_model_name, model_kwargs=emd_model_kwargs)
+
+    try:
+        store = FAISS.load_local("./embeddings", hf_embedding, allow_dangerous_deserialization = True)
+        retriever = store.as_retriever()
+    except Exception as e:
+        # Load the document from a web url
+        print('Exception while trying to retrieved loaded embeddings')
+        url = "https://docs.sonarsource.com/sonarqube/latest/"
+        doc_splits = retrieve_contents_from_subpages(url)
+        #print(doc_splits)
+        
+        # Store the document into a vector store with a specific embedding model
+        vectorstore = FAISS.from_documents(doc_splits, HuggingFaceEmbeddings(model_name=embedding_model_name))
+        vectorstore.save_local('./embeddings')
+        retriever = vectorstore.as_retriever()
+    return retriever
     
 if __name__ == "__main__":
 
-    # Load the document from a web url
-    url = "https://docs.sonarsource.com/sonarqube/latest/"
-    doc_splits = retrieve_contents_from_subpages(url)
-    print(doc_splits)
-    
-    # Store the document into a vector store with a specific embedding model
-    vectorstore = FAISS.from_documents(doc_splits, HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2"))
 
     #vectorstore = FAISS.from_documents(doc_splits, HFEmbeddingsModel)
     os.environ["GROQ_API_KEY"] = "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"
@@ -81,7 +95,7 @@ if __name__ == "__main__":
 
     # Query against your own data
     chain = ConversationalRetrievalChain.from_llm(llm,
-                                                vectorstore.as_retriever(),
+                                                get_retriever(),
                                                 return_source_documents=True)
 
     prompt_1 = "What is SonarQube?"
@@ -105,14 +119,10 @@ if __name__ == "__main__":
         if submitted:
             # few shot prompt engineering and instruction fine tuning - included a RAG prompt from rlm/rag-prompt
             # aware of the context window
-            prompt = f""" You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Provide an elaborate answer to the questions. Given are some examples. If this is the question: {prompt_1}, then the answer will be: {completion_1}.
-            
-            If this is the question: {prompt_2},
-            
-            then the answer will be: {completion_2}.
-                    
-            If this is the question: {text}?, then the answer will be: """
-
-            #TO-DO: add some question answer examples and calculate rouge, bert and bleu score if applicable.
+            prompt = f""" You are an assistant for question-answering tasks. If you don't know the answer, just say that you don't know. 
+            Provide an elaborate answer to the questions. Given are some examples. 
+            Question: "{prompt_1}", Answer: "{completion_1}".
+            Question: "{prompt_2}", Answer: "{completion_2}".
+            Generate answer for the question: {text}"""
 
             st.info(chain({"question": prompt, "chat_history": []})['answer'])
